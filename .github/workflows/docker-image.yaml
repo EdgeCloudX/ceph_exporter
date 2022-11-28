@@ -5,10 +5,8 @@ on:
   push:
     branches:
       - ecx-*
-      - 3.0.0.1-nautilus
   pull_request:
     branches:
-      - 3.0.0.1-nautilus
       - ecx-*
 env:
   VERSION: 3.0.0.1-nautilus
