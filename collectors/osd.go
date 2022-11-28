@@ -1154,9 +1154,9 @@ func (o *OSDCollector) Collect(ch chan<- prometheus.Metric) {
 		log.Println("failed collecting OSD scrub metrics:", err)
 	}
 
-	if err := o.collectPGRecoveryState(ch); err != nil {
-		log.Println("failed collecting PG recovery metrics:", err)
-	}
+	//if err := o.collectPGRecoveryState(ch); err != nil {
+	//	log.Println("failed collecting PG recovery metrics:", err)
+	//}
 
 	for _, metric := range o.collectorList() {
 		metric.Collect(ch)
