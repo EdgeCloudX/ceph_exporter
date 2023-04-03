@@ -29,4 +29,3 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build & Push Docker image
         run: make package
-�
