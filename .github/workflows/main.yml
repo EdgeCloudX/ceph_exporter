@@ -1,14 +1,15 @@
-name: Build x86 and arm Image
+name:  Build x86 and arm Image
+
+env:
+  VERSION: 4.1.3
 
 on:
+  pull_request:
+    branches:
+      - exc-*
   push:
     branches:
       - ecx-*
-  pull_request:
-    branches:
-      - ecx-*
-env:
-  VERSION: 4.1.3
 
 jobs:
   docker-image:
