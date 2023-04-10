@@ -8,7 +8,6 @@ ifeq ($(ENABLE_JOURNALD), 1)
 	LOGCOUNTER=./bin/log-counter
 endif
 
-
 package:
 	docker buildx create --use
 	docker buildx build  --platform $(DOCKER_PLATFORMS) -t $(IMAGE)  --push .
