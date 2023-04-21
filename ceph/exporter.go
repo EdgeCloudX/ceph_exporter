@@ -203,9 +203,10 @@ func (exporter *Exporter) setCephVersion() error {
 // Describe sends all the descriptors of the collectors included to
 // the provided channel.
 func (exporter *Exporter) Describe(ch chan<- *prometheus.Desc) {
+	exporter.Logger.Infof("Describe cluster:%s,config:%s,user:%s", exporter.Cluster, exporter.Config, exporter.User)
 	err := exporter.setCephVersion()
 	if err != nil {
-		exporter.Logger.WithError(err).Error("failed to set ceph Version")
+		exporter.Logger.WithError(err).Error("Describe failed to set ceph Version")
 		return
 	}
 
@@ -226,10 +227,10 @@ func (exporter *Exporter) Describe(ch chan<- *prometheus.Desc) {
 func (exporter *Exporter) Collect(ch chan<- prometheus.Metric) {
 	exporter.mu.Lock()
 	defer exporter.mu.Unlock()
-
+	exporter.Logger.Infof("Collect cluster:%s,config:%s,user:%s", exporter.Cluster, exporter.Config, exporter.User)
 	err := exporter.setCephVersion()
 	if err != nil {
-		exporter.Logger.WithError(err).Error("failed to set ceph Version")
+		exporter.Logger.WithError(err).Error("Collect failed to set ceph Version")
 		return
 	}
 

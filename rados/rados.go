@@ -67,7 +67,6 @@ func (c *RadosConn) newRadosConn() (*rados.Conn, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading config file: %s", err)
 	}
-
 	tv := strconv.FormatFloat(c.timeout.Seconds(), 'f', -1, 64)
 	// Set rados_osd_op_timeout and rados_mon_op_timeout to avoid Mon
 	// and PG command hang.
@@ -116,6 +115,7 @@ func (c *RadosConn) MonCommand(args []byte) (buffer []byte, info string, err err
 
 // MgrCommand executes a manager command to rados.
 func (c *RadosConn) MgrCommand(args [][]byte) (buffer []byte, info string, err error) {
+	c.logger.Infof("MgrCommand args:%v", string(bytes.Join(args, []byte(","))))
 	ll := c.logger.WithField("args", string(bytes.Join(args, []byte(","))))
 
 	ll.Trace("creating rados connection to execute mgr command")
@@ -140,7 +140,7 @@ func (c *RadosConn) MgrCommand(args [][]byte) (buffer []byte, info string, err e
 // GetPoolStats returns the count of unfound objects for the given rados pool.
 func (c *RadosConn) GetPoolStats(pool string) (*ceph.PoolStat, error) {
 	ll := c.logger.WithField("pool", pool)
-
+	c.logger.Infof("GetPoolStats args:%v", pool)
 	ll.Trace("creating rados connection to get pool stats")
 
 	conn, err := c.newRadosConn()
