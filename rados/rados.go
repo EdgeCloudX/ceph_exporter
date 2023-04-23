@@ -85,6 +85,10 @@ func (c *RadosConn) newRadosConn() (*rados.Conn, error) {
 	if err != nil {
 		c.logger.Errorf("conn.SetConfigOption,rgw_keystone_admin_user,err:%s", err)
 	}
+	err = conn.SetConfigOption("client_name", c.user)
+	if err != nil {
+		c.logger.Errorf("conn.SetConfigOption client_name,err:%s", err)
+	}
 	err = conn.Connect()
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to rados: %s", err)
@@ -98,7 +102,6 @@ func (c *RadosConn) MonCommand(args []byte) (buffer []byte, info string, err err
 	ll := c.logger.WithField("args", string(args))
 	c.logger.Infof("MonCommand args:%v", string(args))
 	ll.Trace("creating rados connection to execute mon command")
-
 	conn, err := c.newRadosConn()
 	if err != nil {
 		return nil, "", err
