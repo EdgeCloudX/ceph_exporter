@@ -88,6 +88,7 @@ func (exporter *Exporter) cephVersionCmd() []byte {
 	cmd, err := json.Marshal(map[string]interface{}{
 		"prefix": "version",
 		"format": "json",
+		"name":   exporter.User,
 	})
 	if err != nil {
 		exporter.Logger.WithError(err).Panic("failed to marshal ceph version command")
