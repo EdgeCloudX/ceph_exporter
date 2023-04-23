@@ -62,7 +62,7 @@ func (c *RadosConn) newRadosConn() (*rados.Conn, error) {
 		c.logger.Errorf("rados.NewConnWithUser:%s", err)
 		return nil, fmt.Errorf("error creating rados connection: %s", err)
 	}
-
+	c.logger.Infof("rados.NewConnWithUser cluster:%v", conn.Cluster())
 	err = conn.ReadConfigFile(c.configFile)
 	if err != nil {
 		return nil, fmt.Errorf("error reading config file: %s", err)
@@ -81,7 +81,10 @@ func (c *RadosConn) newRadosConn() (*rados.Conn, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error setting rados_mon_op_timeout: %s", err)
 	}
-
+	err = conn.SetConfigOption("rgw_keystone_admin_user", c.user)
+	if err != nil {
+		c.logger.Errorf("conn.SetConfigOption,rgw_keystone_admin_user,err:%s", err)
+	}
 	err = conn.Connect()
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to rados: %s", err)
