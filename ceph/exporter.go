@@ -177,6 +177,7 @@ func (exporter *Exporter) setCephVersion() error {
 	buf, _, err := exporter.Conn.MonCommand(exporter.cephVersionCmd())
 	if err != nil {
 		exporter.Logger.WithError(err).Error("Failed set CephVersion")
+		exporter.Logger.Errorf("Failed set CephVersion,err:%s,Cluster:%s,config:%s,User:%s,Version:%s", err, exporter.Cluster, exporter.Config, exporter.User, exporter.Version)
 		return err
 	}
 
