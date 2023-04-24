@@ -81,7 +81,13 @@ func (c *RadosConn) newRadosConn() (*rados.Conn, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error setting rados_mon_op_timeout: %s", err)
 	}
-	err = conn.SetConfigOption("keyring", fmt.Sprintf("/etc/ceph/ceph.client.%s.keyring", c.user))
+	err = conn.SetConfigOption("rgw_keystone_admin_user", c.user)
+	if err != nil {
+		c.logger.Errorf("conn.SetConfigOption,rgw_keystone_admin_user,err:%s", err)
+	}
+	keyring := fmt.Sprintf("/etc/ceph/ceph.client.%s.keyring", c.user)
+	c.logger.Infof("keyring is %s", keyring)
+	err = conn.SetConfigOption("keyring", keyring)
 	if err != nil {
 		c.logger.Errorf("conn.SetConfigOption keyring,err:%s", err)
 	}
