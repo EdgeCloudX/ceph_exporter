@@ -868,7 +868,7 @@ func (o *OSDCollector) collectOSDTreeDown(ch chan<- prometheus.Metric) error {
 
 		osdName := downItem.Name
 		lb := o.getOSDLabelFromName(osdName)
-
+		o.logger.Infof("collectOSDTreeDown downItem.Id:%d,downItem.Name:%s,downItem.Type:%s,downItem.Status:%s,osdName:%s,lb.DeviceClass:%s,lb.Host:%s,lb.Root:%s,lb.Rack:%s", downItem.ID, downItem.Name, downItem.Type, downItem.Status, osdName, lb.DeviceClass, lb.Host, lb.Root, lb.Rack)
 		ch <- prometheus.MustNewConstMetric(o.OSDDownDesc, prometheus.GaugeValue, 1,
 			downItem.Status,
 			osdName,
