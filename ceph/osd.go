@@ -861,7 +861,11 @@ func (o *OSDCollector) collectOSDTreeDown(ch chan<- prometheus.Metric) error {
 	}
 
 	downItems := append(osdDown.Nodes, osdDown.Stray...)
-	for _, downItem := range downItems {
+	downMap := make(map[string]osdNode)
+	for _, item := range downItems {
+		downMap[fmt.Sprintf("%s|%s|%s|%d", item.Name, item.Type, item.Status, item.ID)] = item
+	}
+	for _, downItem := range downMap {
 		if downItem.Type != "osd" {
 			continue
 		}
