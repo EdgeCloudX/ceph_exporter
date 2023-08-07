@@ -1,6 +1,6 @@
 CGO_ENABLED:=0
 DOCKER_PLATFORMS=linux/arm64,linux/amd64
-REGISTRY?=cloudx2021
+REGISTRY=registry.eecos.cn:7443/ecf-edge/digitalocean
 TAG?=4.1.7
 IMAGE:=$(REGISTRY)/ceph_exporter:$(TAG)
 ifeq ($(ENABLE_JOURNALD), 1)
