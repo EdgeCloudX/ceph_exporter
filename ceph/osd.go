@@ -844,6 +844,11 @@ func (o *OSDCollector) getOSDLabelFromName(osdid string) *cephOSDLabel {
 	return o.getOSDLabelFromID(id)
 }
 
+type osdNodeMap struct {
+	osdNode  osdNode
+	osdLabel *cephOSDLabel
+}
+
 func (o *OSDCollector) collectOSDTreeDown(ch chan<- prometheus.Metric) error {
 	cmd := o.cephOSDTreeCommand("down")
 	buff, _, err := o.conn.MonCommand(cmd)
@@ -861,25 +866,28 @@ func (o *OSDCollector) collectOSDTreeDown(ch chan<- prometheus.Metric) error {
 	}
 
 	downItems := append(osdDown.Nodes, osdDown.Stray...)
-	downMap := make(map[string]osdNode)
+	downMap := make(map[string]osdNodeMap)
 	for _, item := range downItems {
-		downMap[fmt.Sprintf("%s|%s|%s|%d", item.Name, item.Type, item.Status, item.ID)] = item
+		lb := o.getOSDLabelFromName(item.Name)
+
+		downMap[fmt.Sprintf("%s|%s|%s|%d|%s", item.Name, item.Type, item.Status, item.ID, lb.Host)] = osdNodeMap{
+			osdNode:  item,
+			osdLabel: lb,
+		}
 	}
+	o.logger.Infof("collectOSDTreeDown downItem downMap:%v", downMap)
 	for _, downItem := range downMap {
-		if downItem.Type != "osd" {
+		if downItem.osdNode.Type != "osd" {
 			continue
 		}
-
-		osdName := downItem.Name
-		lb := o.getOSDLabelFromName(osdName)
-		o.logger.Infof("collectOSDTreeDown downItem.Id:%d,downItem.Name:%s,downItem.Type:%s,downItem.Status:%s,osdName:%s,lb.DeviceClass:%s,lb.Host:%s,lb.Root:%s,lb.Rack:%s", downItem.ID, downItem.Name, downItem.Type, downItem.Status, osdName, lb.DeviceClass, lb.Host, lb.Root, lb.Rack)
+		o.logger.Infof("collectOSDTreeDown downItem.Id:%d,downItem.Name:%s,downItem.Type:%s,downItem.Status:%s,osdName:%s,lb.DeviceClass:%s,lb.Host:%s,lb.Root:%s,lb.Rack:%s", downItem.osdNode.ID, downItem.osdNode.Name, downItem.osdNode.Type, downItem.osdNode.Status, downItem.osdNode.Name, downItem.osdLabel.DeviceClass, downItem.osdLabel.Host, downItem.osdLabel.Root, downItem.osdLabel.Rack)
 		ch <- prometheus.MustNewConstMetric(o.OSDDownDesc, prometheus.GaugeValue, 1,
-			downItem.Status,
-			osdName,
-			lb.DeviceClass,
-			lb.Host,
-			lb.Root,
-			lb.Rack)
+			downItem.osdNode.Status,
+			downItem.osdNode.Name,
+			downItem.osdLabel.DeviceClass,
+			downItem.osdLabel.Host,
+			downItem.osdLabel.Root,
+			downItem.osdLabel.Rack)
 	}
 
 	return nil
