@@ -17,6 +17,7 @@ RUN echo "deb https://download.ceph.com/debian-nautilus bionic main" >> /etc/apt
 RUN apt-get update && \
     apt-get install -y --force-yes librados-dev librbd-dev
 
+
 RUN \
   mkdir -p /goroot && \
   curl https://storage.googleapis.com/golang/go1.13.linux-$(dpkg --print-architecture).tar.gz | tar xvzf - -C /goroot --strip-components=1
