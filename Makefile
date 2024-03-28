@@ -2,7 +2,7 @@ CGO_ENABLED:=0
 DOCKER_PLATFORMS=linux/arm64,linux/amd64
 TAG?=4.1.8
 
-IMAGE:=harbor.ctyuncdn.cn/ecf-edge/digitalocean/ceph_exporter:$(TAG)
+IMAGE:=harbor.ctyuncdn.cn/ecf-edge-dev/digitalocean/ceph_exporter:$(TAG)
 ifeq ($(ENABLE_JOURNALD), 1)
 	CGO_ENABLED:=1
 	LOGCOUNTER=./bin/log-counter
